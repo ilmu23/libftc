@@ -30,10 +30,14 @@ SRCDIR	=	src
 OBJDIR	=	obj
 INCDIR	=	inc
 
+UNISTDDIR	=	unistd
+
+UNISTDFILES	=	ft_write.c
+
 ASMFILES	=	_start.asm \
 				syscall.asm
 
-CFILES		=	
+CFILES		=	$(addprefix $(UNISTDDIR)/, $(UNISTDFILES))
 
 ASMSRCS	=	$(addprefix $(SRCDIR)/, $(ASMFILES))
 ASMOBJS	=	$(patsubst $(SRCDIR)/%.asm, $(OBJDIR)/%.o, $(ASMSRCS))
@@ -50,7 +54,7 @@ $(NAME): $(OBJDIR) $(ASMOBJS) $(COBJS)
 
 $(OBJDIR):
 	@printf "\e[34;1mLIBFT >\e[m Creating objdirs\n" $@
-	@mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR)/$(UNISTDDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.asm
 	@printf "\e[34;1mLIBFT >\e[m Compiling %s\n" $@

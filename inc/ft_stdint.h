@@ -114,6 +114,7 @@ typedef uint64_t	uintmax_t;
 # define UINTMAX_MAX	UINT64_MAX
 
 # define SIZE_MAX		UINT64_MAX
+# define SSIZE_MAX		INT64_MAX
 
 // Integer constant expression macros
 

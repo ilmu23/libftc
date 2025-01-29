@@ -30,7 +30,8 @@ SRCDIR	=	src
 OBJDIR	=	obj
 INCDIR	=	inc
 
-ASMFILES	=	_start.asm
+ASMFILES	=	_start.asm \
+				syscall.asm
 
 CFILES		=	
 

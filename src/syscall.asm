@@ -1,5 +1,5 @@
 .text
-	.globl syscall0, syscall1, syscall2, syscall3, syscall4, syscall5
+	.globl syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6
 
 syscall0:
 	mov %rdi,%rax
@@ -43,5 +43,19 @@ syscall5:
 	mov %rcx,%rdx
 	mov %r8,%r10
 	mov %r9,%r8
+	syscall
+	ret
+
+syscall6:
+	mov %rdi,%rax
+	mov %rsi,%rdi
+	mov %rdx,%rsi
+	mov %rcx,%rdx
+	mov %r8,%r10
+	mov %r9,%r8
+	pop %r11
+	pop %r9
+	push %r9
+	push %r11
 	syscall
 	ret

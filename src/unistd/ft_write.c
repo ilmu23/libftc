@@ -11,5 +11,5 @@
 #include "internal/syscall.h"
 
 ssize_t	ft_write(int fd, const void *buf, size_t n) {
-	return (ssize_t)syscall3(SYS_WRITE, (void *)(intptr_t)fd, (void *)buf, (void *)n);
+	return (ssize_t)(intptr_t)syscall3(SYS_WRITE, fd, buf, n);
 }

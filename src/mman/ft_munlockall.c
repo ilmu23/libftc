@@ -5,13 +5,11 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<ft_types.h>>
+// <<ft_munlockall.c>>
 
+#include "ft_mman.h"
+#include "internal/syscall.h"
 
-#ifndef FT_TYPES_H
-# define FT_TYPES_H
-
-typedef signed long		off_t;
-typedef signed long		ssize_t;
-
-#endif
+int	ft_munlockall(void) {
+	return (int)(intptr_t)syscall0(SYS_MUNLOCKALL);
+}

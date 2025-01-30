@@ -15,22 +15,35 @@
 // system call wrappers
 
 /// system call with 0 arguments
-void	*syscall0(intptr_t n);
+void	*syscall0(uintptr_t n);
 
 /// system call with 1 arguments
-void	*syscall1(intptr_t n, void *a1);
+void	*syscall1(uintptr_t n, void *a1);
 
 /// system call with 2 arguments
-void	*syscall2(intptr_t n, void *a1, void *a2);
+void	*syscall2(uintptr_t n, void *a1, void *a2);
 
 /// system call with 3 arguments
-void	*syscall3(intptr_t n, void *a1, void *a2, void *a3);
+void	*syscall3(uintptr_t n, void *a1, void *a2, void *a3);
 
 /// system call with 4 arguments
-void	*syscall4(intptr_t n, void *a1, void *a2, void *a3, void *a4);
+void	*syscall4(uintptr_t n, void *a1, void *a2, void *a3, void *a4);
 
 /// system call with 5 arguments
-void	*syscall5(intptr_t n, void *a1, void *a2, void *a3, void *a4, void *a5);
+void	*syscall5(uintptr_t n, void *a1, void *a2, void *a3, void *a4, void *a5);
+
+/// system call with 6 arguments
+void	*syscall6(uintptr_t n, void *a1, void *a2, void *a3, void *a4, void *a5, void *a6);
+
+// convenience macros
+# define _cast	(void *)(uintptr_t)
+
+# define syscall1(n, a)					(syscall1(n, _cast a))
+# define syscall2(n, a, b)				(syscall2(n, _cast a, _cast b))
+# define syscall3(n, a, b, c)			(syscall3(n, _cast a, _cast b, _cast c))
+# define syscall4(n, a, b, c, d)		(syscall4(n, _cast a, _cast b, _cast c, _cast d))
+# define syscall5(n, a, b, c, d, e)		(syscall5(n, _cast a, _cast b, _cast c, _cast d, _cast e))
+# define syscall6(n, a, b, c, d, e, f)	(syscall6(n, _cast a, _cast b, _cast c, _cast d, _cast e, _cast f))
 
 // system call numbers
 
@@ -44,7 +57,7 @@ void	*syscall5(intptr_t n, void *a1, void *a2, void *a3, void *a4, void *a5);
 # define SYS_POLL						7
 # define SYS_LSEEK						8
 # define SYS_MMAP						9
-# define SYS_MPROT						10
+# define SYS_MPROTECT					10
 # define SYS_MUNMAP						11
 # define SYS_BRK						12
 # define SYS_RT_SIGACTION				13

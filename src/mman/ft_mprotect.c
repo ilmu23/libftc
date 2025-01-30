@@ -5,13 +5,11 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<ft_types.h>>
+// <<ft_mprotect.c>>
 
+#include "ft_mman.h"
+#include "internal/syscall.h"
 
-#ifndef FT_TYPES_H
-# define FT_TYPES_H
-
-typedef signed long		off_t;
-typedef signed long		ssize_t;
-
-#endif
+int	ft_mprotect(void *addr, size_t len, int prot) {
+	return (int)(intptr_t)syscall3(SYS_MPROTECT, addr, len, prot);
+}

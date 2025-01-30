@@ -5,18 +5,22 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<ft_unistd.h>>
+// <<defs.h>>
 
+#ifndef DEFS_H
+# define DEFS_H
+# include "ft_stdint.h"
 
-#ifndef FT_UNISTD_H
-# define FT_UNISTD_H
-# include "ft_types.h"
-# include "ft_stddef.h"
+typedef int8_t		i8;
+typedef	int16_t		i16;
+typedef	int32_t		i32;
+typedef	int64_t		i64;
 
-ssize_t	ft_write(int fd, const void *buf, size_t n);
+typedef uint8_t		u8;
+typedef	uint16_t	u16;
+typedef	uint32_t	u32;
+typedef	uint64_t	u64;
 
-long	ft_sysconf(int name);
-
-# define _SC_PAGESIZE 30
+# define __inrange(x, y, z)	(x >= y && x <= z)
 
 #endif

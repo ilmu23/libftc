@@ -5,18 +5,17 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<ft_unistd.h>>
+// <<ft_stdlib.h>>
 
 
-#ifndef FT_UNISTD_H
-# define FT_UNISTD_H
+#ifndef FT_STDLIB_H
+# define FT_STDLIB_H
 # include "ft_types.h"
 # include "ft_stddef.h"
 
-ssize_t	ft_write(int fd, const void *buf, size_t n);
+void	*ft_malloc(size_t n);
 
-long	ft_sysconf(int name);
-
-# define _SC_PAGESIZE 30
+void	ft_exit(int estat);
+void	ft_free(void *ptr);
 
 #endif

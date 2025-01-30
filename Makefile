@@ -31,6 +31,7 @@ OBJDIR	=	obj
 INCDIR	=	inc
 
 MMANDIR		=	mman
+STDLIBDIR	=	stdlib
 UNISTDDIR	=	unistd
 
 MMANFILES	=	ft_mlockall.c \
@@ -42,12 +43,17 @@ MMANFILES	=	ft_mlockall.c \
 				ft_munlock.c \
 				ft_munmap.c
 
+STDLIBFILES	=	ft_exit.c \
+				ft_free.c \
+				ft_malloc.c
+
 UNISTDFILES	=	ft_write.c
 
 ASMFILES	=	_start.asm \
 				syscall.asm
 
 CFILES		=	$(addprefix $(MMANDIR)/, $(MMANFILES)) \
+				$(addprefix $(STDLIBDIR)/, $(STDLIBFILES)) \
 				$(addprefix $(UNISTDDIR)/, $(UNISTDFILES))
 
 ASMSRCS	=	$(addprefix $(SRCDIR)/, $(ASMFILES))
@@ -66,6 +72,7 @@ $(NAME): $(OBJDIR) $(ASMOBJS) $(COBJS)
 $(OBJDIR):
 	@printf "\e[34;1mLIBFT >\e[m Creating objdirs\n" $@
 	@mkdir -p $(OBJDIR)/$(MMANDIR)
+	@mkdir -p $(OBJDIR)/$(STDLIBDIR)
 	@mkdir -p $(OBJDIR)/$(UNISTDDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.asm

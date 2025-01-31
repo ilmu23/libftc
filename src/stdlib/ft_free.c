@@ -9,8 +9,7 @@
 
 #include "internal/ft_stdlib_int.h"
 
-#define __get_chnk(x)	((uintptr_t)x - (sizeof(chunk_t) % 16) ? sizeof(chunk_t) + (16 - (sizeof(chunk_t) % 16)) : sizeof(chunk_t))
-#define __chnksize		((sizeof(chunk_t) % 16) ? sizeof(chunk_t) + (16 - (sizeof(chunk_t) % 16)) : sizeof(chunk_t))
+#define __get_chnk(x)	((uintptr_t)x - __chnksize)
 
 static inline bin_t	*_get_bin(const chunk_t *chnk);
 static inline void	_defrag(bin_t *bin);
@@ -52,32 +51,47 @@ static inline bin_t	*_get_bin(const chunk_t *chnk) {
 	bin_t	*bin;
 
 	for (bin = __heap.sml; bin; bin = bin->next)
-		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)bin->bsize))
+		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)(bin + bin->bsize)))
 			return bin;
 	for (bin = __heap.med; bin; bin = bin->next)
-		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)bin->bsize))
+		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)(bin + bin->bsize)))
 			return bin;
 	for (bin = __heap.lrg; bin; bin = bin->next)
-		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)bin->bsize))
+		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)(bin + bin->bsize)))
 			return bin;
 	return NULL;
 }
 
 static inline void	_defrag(bin_t *bin) {
-	chunk_t	*next;
 	chunk_t	*chnk;
+	chunk_t	*tmp;
 
-	for (chnk = bin->first, next = chnk->nxt; next; chnk = next, next = chnk->nxt) {
-		if (!chnk->inuse && !next->inuse) {
+	for (chnk = bin->first, tmp = chnk->nxt; tmp; chnk = tmp, tmp = chnk->nxt) {
+		if (!chnk->inuse && !tmp->inuse) {
+			bin->bsize += __chnksize;
+			bin->fsize += __chnksize;
+			__heap.mfree += __chnksize;
+			__heap.mtotal += __chnksize;
 			*chnk = (chunk_t){
-				.nxt = next->nxt,
-				.nfr = next->nfr,
-				.size = chnk->size + next->size + __chnksize,
+				.nxt = tmp->nxt,
+				.nfr = tmp->nfr,
+				.size = chnk->size + tmp->size + __chnksize,
 				.asize = 0,
 				.addr = chnk->addr,
 				.chksum = chnk->chksum,
 				.inuse = 0
 			};
 		}
+	}
+	for (chnk = bin->first, tmp = NULL; chnk; chnk = chnk->nxt) {
+		if (!chnk->inuse) {
+			if (tmp)
+				tmp->nfr = chnk;
+			else
+				bin->free = chnk;
+			tmp = chnk;
+		}
+		if (!chnk->nxt)
+			bin->last = chnk;
 	}
 }

@@ -11,7 +11,7 @@
 
 heap_t	__heap;
 
-# define __after(x, n)	((uintptr_t)x + (sizeof(*x) % 16) ? sizeof(*x) + (16 - (sizeof(*bin) % 16)): sizeof(*x) + n)
+# define __after(x, n)	((uintptr_t)x + ((sizeof(*x) % 16) ? sizeof(*x) + (16 - (sizeof(*x) % 16)): sizeof(*x)) + n)
 
 static inline void	*_new_chunk(const size_t n, const u8 type, bin_t *bin);
 static inline void	*_extend_bin(const size_t n, const u8 type, bin_t *bin, const size_t bsize);
@@ -23,13 +23,17 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t ch
 static inline void	_destroy_bin(bin_t **bin, bin_t *prev, const u8 type);
 
 void	*ft_malloc(size_t n) {
+	chunk_t	*out;
+
 	if (n == 0)
 		return NULL;
 	if (__inrange(n, _MALLOC_SMALL_MIN, _MALLOC_SMALL_MAX))
-		return _alloc_small(n);
-	if (__inrange(n, _MALLOC_MEDIUM_MIN, _MALLOC_MEDIUM_MAX))
-		return _alloc_medium(n);
-	return _alloc_large(n);
+		out = _alloc_small(n);
+	else if (__inrange(n, _MALLOC_MEDIUM_MIN, _MALLOC_MEDIUM_MAX))
+		out = _alloc_medium(n);
+	else
+		out =  _alloc_large(n);
+	return (out) ? out->addr : NULL;
 }
 
 static inline void	*_new_chunk(const size_t n, const u8 type, bin_t *bin) {
@@ -44,11 +48,11 @@ static inline void	*_new_chunk(const size_t n, const u8 type, bin_t *bin) {
 	newbin = ft_mmap((bin) ? bin + bin->bsize : NULL, asize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
 	if (newbin == MAP_FAILED)
 		return NULL;
-	__heap.mfree += asize;
-	__heap.mtotal += asize;
+	__heap.mfree += asize - __binsize - __chnksize;
+	__heap.mtotal += asize - __binsize - __chnksize;
 	if (bin && newbin == bin + bin->bsize)
-		return _extend_bin(n, type, bin, asize);
-	return _init_bin(n, type, newbin, asize);
+		return _extend_bin(n, type, bin, asize - __binsize);
+	return _init_bin(n, type, newbin, asize - __binsize);
 }
 
 static inline void	*_extend_bin(const size_t n, const u8 type, bin_t *bin, const size_t bsize) {
@@ -60,7 +64,7 @@ static inline void	*_extend_bin(const size_t n, const u8 type, bin_t *bin, const
 		*chnk = (chunk_t){
 			.nxt = NULL,
 			.nfr = NULL,
-			.size = bsize,
+			.size = bsize - __chnksize,
 			.asize = 0,
 			.addr = (void *)__after(chnk, 0),
 			.chksum = (uintptr_t)bin,
@@ -97,15 +101,18 @@ static inline void	*_init_bin(const size_t n, const u8 type, bin_t *bin, const s
 	bin_t	*tmp;
 
 	*bin = (bin_t){
-		.bsize = bsize,
-		.fsize = bsize,
+		.first = NULL,
+		.free = NULL,
+		.last = NULL,
+		.bsize = bsize - __chnksize,
+		.fsize = bsize - __chnksize,
 		.next = NULL
 	};
 	chnk = (chunk_t *)__after(bin, 0);
 	*chnk = (chunk_t){
 		.nxt = NULL,
 		.nfr = NULL,
-		.size = bsize - sizeof(*bin),
+		.size = bsize - __chnksize,
 		.asize = 0,
 		.addr = (void *)__after(chnk, 0),
 		.chksum = (uintptr_t)bin,
@@ -114,7 +121,7 @@ static inline void	*_init_bin(const size_t n, const u8 type, bin_t *bin, const s
 	bin->first = chnk;
 	switch (type) {
 		case _CHNK_SMALL:
-			_shrink_to_fit(chnk, n, _CHNK_SMALL_MIN_SIZE, NULL);
+			_shrink_to_fit(chnk, n, _CHNK_SMALL_MIN_SIZE, bin);
 			for (tmp = __heap.sml; tmp && tmp->next; tmp = tmp->next)
 				;
 			if (tmp)
@@ -123,7 +130,7 @@ static inline void	*_init_bin(const size_t n, const u8 type, bin_t *bin, const s
 				__heap.sml = bin;
 			break ;
 		case _CHNK_MEDIUM:
-			_shrink_to_fit(chnk, n, _CHNK_MEDIUM_MIN_SIZE, NULL);
+			_shrink_to_fit(chnk, n, _CHNK_MEDIUM_MIN_SIZE, bin);
 			for (tmp = __heap.med; tmp && tmp->next; tmp = tmp->next)
 				;
 			if (tmp)
@@ -132,7 +139,7 @@ static inline void	*_init_bin(const size_t n, const u8 type, bin_t *bin, const s
 				__heap.med = bin;
 			break ;
 		case _CHNK_LARGE:
-			_shrink_to_fit(chnk, n, _CHNK_LARGE_MIN_SIZE, NULL);
+			_shrink_to_fit(chnk, n, _CHNK_LARGE_MIN_SIZE, bin);
 			for (tmp = __heap.lrg; tmp && tmp->next; tmp = tmp->next)
 				;
 			if (tmp)
@@ -146,7 +153,6 @@ static inline void	*_init_bin(const size_t n, const u8 type, bin_t *bin, const s
 	bin->fsize -= chnk->size;
 	__heap.mfree -= chnk->size;
 	bin->free = chnk->nxt;
-	bin->last = chnk->nxt;
 	return chnk;
 }
 
@@ -240,11 +246,11 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t ch
 
 	for (delta = 0; chnk->size > _MALLOC_MEDIUM_MAX && chnk->size - n - delta > _MALLOC_MEDIUM_MAX; delta += _MALLOC_MEDIUM_MAX)
 		chnk->size -= _MALLOC_MEDIUM_MAX;
-	for (delta = 0; chnk->size > _MALLOC_SMALL_MAX && chnk->size - n - delta > _MALLOC_SMALL_MAX; delta += _MALLOC_SMALL_MAX)
+	for (; chnk->size > _MALLOC_SMALL_MAX && chnk->size - n - delta > _MALLOC_SMALL_MAX; delta += _MALLOC_SMALL_MAX)
 		chnk->size -= _MALLOC_SMALL_MAX;
-	for (delta = 0; chnk->size > _MALLOC_SMALL_MAX / 2 && chnk->size - n - delta > _MALLOC_SMALL_MAX / 2; delta += _MALLOC_SMALL_MAX / 2)
+	for (; chnk->size > _MALLOC_SMALL_MAX / 2 && chnk->size - n - delta > _MALLOC_SMALL_MAX / 2; delta += _MALLOC_SMALL_MAX / 2)
 		chnk->size -= _MALLOC_SMALL_MAX / 2;
-	for (delta = 0; chnk->size > 16 && chnk->size - n > 16; delta += 16)
+	for (; chnk->size > 16 && chnk->size - n > 16; delta += 16)
 		chnk->size -= 16;
 	next = NULL;
 	if (chnk->nxt) {
@@ -259,17 +265,27 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t ch
 			.chksum = (uintptr_t)bin,
 			.inuse = 0
 		};
+		bin->bsize -= __chnksize;
+		bin->fsize -= __chnksize;
+		__heap.mfree -= __chnksize;
+		__heap.mtotal -= __chnksize;
 	} else if (delta > chnk_min_size) {
 		next = (chunk_t *)__after(chnk, chnk->size);
 		*next = (chunk_t){
 			.nxt = NULL,
 			.nfr = NULL,
-			.size = delta - sizeof(*chnk),
+			.size = delta - __chnksize,
 			.asize = 0,
 			.addr = (void *)__after(next, 0),
 			.chksum = (uintptr_t)bin,
 			.inuse = 0
 		};
+		chnk->nxt = next;
+		chnk->nfr = next;
+		bin->bsize -= __chnksize;
+		bin->fsize -= __chnksize;
+		__heap.mfree -= __chnksize;
+		__heap.mtotal -= __chnksize;
 	} else
 		chnk->size += delta;
 	if (bin && next && !next->nxt)

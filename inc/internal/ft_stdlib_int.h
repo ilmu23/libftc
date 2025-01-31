@@ -19,6 +19,9 @@ typedef struct bin	bin_t;
 typedef struct heap	heap_t;
 typedef struct chnk	chunk_t;
 
+#define __binsize		((sizeof(bin_t) % 16) ? (sizeof(bin_t) + (16 - (sizeof(bin_t) % 16))) : sizeof(bin_t))
+#define __chnksize		((sizeof(chunk_t) % 16) ? (sizeof(chunk_t) + (16 - (sizeof(chunk_t) % 16))) : sizeof(chunk_t))
+
 struct heap {
 	bin_t	*sml;
 	bin_t	*med;
@@ -56,9 +59,9 @@ extern heap_t	__heap;
 # define _CHNK_SMALL			1
 # define _CHNK_MEDIUM			2
 # define _CHNK_LARGE			3
-# define _CHNK_SMALL_MIN_SIZE	(sizeof(chunk_t) + 16)
-# define _CHNK_MEDIUM_MIN_SIZE	(sizeof(chunk_t) + _MALLOC_SMALL_MAX)
-# define _CHNK_LARGE_MIN_SIZE	(sizeof(chunk_t) + _MALLOC_MEDIUM_MAX)
+# define _CHNK_SMALL_MIN_SIZE	(__chnksize + 16)
+# define _CHNK_MEDIUM_MIN_SIZE	(__chnksize + _MALLOC_SMALL_MAX)
+# define _CHNK_LARGE_MIN_SIZE	(__chnksize + _MALLOC_MEDIUM_MAX)
 
 # define _BIN_SMALL		1
 # define _BIN_MEDIUM	2

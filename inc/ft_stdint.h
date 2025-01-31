@@ -70,10 +70,10 @@ typedef uint64_t	uintmax_t;
 
 // Limits
 
-# define INT8_MIN	-0x80
-# define INT16_MIN	-0x8000
-# define INT32_MIN	-0x80000000
-# define INT64_MIN	-0x8000000000000000
+# define INT8_MIN	(int8_t)-0x80
+# define INT16_MIN	(int16_t)-0x8000
+# define INT32_MIN	(int32_t)-0x80000000
+# define INT64_MIN	(int64_t)-0x8000000000000000
 
 # define INT8_MAX	-(INT8_MIN) - 1
 # define INT16_MAX	-(INT16_MIN) - 1

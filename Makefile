@@ -30,8 +30,11 @@ SRCDIR	=	src
 OBJDIR	=	obj
 INCDIR	=	inc
 
+# STD
+
 MMANDIR		=	mman
 STDLIBDIR	=	stdlib
+STRINGDIR	=	string
 UNISTDDIR	=	unistd
 
 MMANFILES	=	ft_mlockall.c \
@@ -47,14 +50,40 @@ STDLIBFILES	=	ft_exit.c \
 				ft_free.c \
 				ft_malloc.c
 
+STRINGFILES	=	ft_strlen.c
+
 UNISTDFILES	=	ft_sysconf.c \
 				ft_write.c
+
+# /STD
+
+# LFT
+
+LFTDIR	=	lft
+PUTDIR	=	$(LFTDIR)/put
+
+PUTFILES	=	ft_putchar.c \
+				ft_putchar_fd.c \
+				ft_putendl.c \
+				ft_putendl_fd.c \
+				ft_putsnbr.c \
+				ft_putsnbr_fd.c \
+				ft_putstr.c \
+				ft_putstr_fd.c \
+				ft_putunbr.c \
+				ft_putunbr_fd.c
+
+LFTFILES	=	$(addprefix $(PUTDIR)/, $(PUTFILES))
+
+# /LFT
 
 ASMFILES	=	_start.asm \
 				syscall.asm
 
-CFILES		=	$(addprefix $(MMANDIR)/, $(MMANFILES)) \
+CFILES		=	$(LFTFILES) \
+				$(addprefix $(MMANDIR)/, $(MMANFILES)) \
 				$(addprefix $(STDLIBDIR)/, $(STDLIBFILES)) \
+				$(addprefix $(STRINGDIR)/, $(STRINGFILES)) \
 				$(addprefix $(UNISTDDIR)/, $(UNISTDFILES))
 
 ASMSRCS	=	$(addprefix $(SRCDIR)/, $(ASMFILES))
@@ -72,8 +101,10 @@ $(NAME): $(OBJDIR) $(ASMOBJS) $(COBJS)
 
 $(OBJDIR):
 	@printf "\e[34;1mLIBFT >\e[m Creating objdirs\n" $@
+	@mkdir -p $(OBJDIR)/$(PUTDIR)
 	@mkdir -p $(OBJDIR)/$(MMANDIR)
 	@mkdir -p $(OBJDIR)/$(STDLIBDIR)
+	@mkdir -p $(OBJDIR)/$(STRINGDIR)
 	@mkdir -p $(OBJDIR)/$(UNISTDDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.asm

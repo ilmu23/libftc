@@ -108,11 +108,11 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(UNISTDDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.asm
-	@printf "\e[34;1mLIBFT >\e[m Compiling %s\n" $@
+	@printf "\e[34;1mLIBFT >\e[m Assembling %s\n" $<
 	@$(AS) $(ASMFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@printf "\e[34;1mLIBFT >\e[m Compiling %s\n" $@
+	@printf "\e[34;1mLIBFT >\e[m Compiling %s\n" $<
 	@$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
 
 clean:

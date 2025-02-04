@@ -10,6 +10,7 @@
 
 #ifndef FT_STDLIB_INT_H
 # define FT_STDLIB_INT_H
+# include "libft.h"
 # include "ft_mman.h"
 # include "ft_stdlib.h"
 # include "ft_unistd.h"
@@ -19,14 +20,18 @@ typedef struct bin	bin_t;
 typedef struct heap	heap_t;
 typedef struct chnk	chunk_t;
 
-#define __binsize		((sizeof(bin_t) % 16) ? (sizeof(bin_t) + (16 - (sizeof(bin_t) % 16))) : sizeof(bin_t))
-#define __chnksize		((sizeof(chunk_t) % 16) ? (sizeof(chunk_t) + (16 - (sizeof(chunk_t) % 16))) : sizeof(chunk_t))
+# define __binsize		((sizeof(bin_t) % 16) ? (sizeof(bin_t) + (16 - (sizeof(bin_t) % 16))) : sizeof(bin_t))
+# define __chnksize		((sizeof(chunk_t) % 16) ? (sizeof(chunk_t) + (16 - (sizeof(chunk_t) % 16))) : sizeof(chunk_t))
+
+# define __cs1(x)	((uintptr_t)x & 0xFFFFFFFF)
+# define __cs2(x)	(((uintptr_t)x >> 32) & 0xFFFFFFFF)
 
 struct heap {
 	bin_t	*sml;
 	bin_t	*med;
 	bin_t	*lrg;
 	size_t	mtotal;
+	size_t	musable;
 	size_t	mfree;
 };
 
@@ -34,22 +39,26 @@ struct bin {
 	chunk_t	*first;
 	chunk_t	*free;
 	chunk_t	*last;
-	size_t	bsize;
-	size_t	fsize;
+	size_t	mtotal;
+	size_t	musable;
+	size_t	mfree;
 	bin_t	*next;
 };
 
 struct chnk {
+	u32		cs1;
 	chunk_t	*nxt;
 	chunk_t	*nfr;
 	size_t	size;
 	size_t	asize;
 	void	*addr;
-	u64		chksum;
 	u8		inuse;
+	u32		cs2;
 };
 
 extern heap_t	__heap;
+
+void	__heapinfo(void);
 
 # define _MALLOC_SMALL_MIN	1
 # define _MALLOC_SMALL_MAX	512

@@ -12,6 +12,7 @@
 #define __get_chnk(x)	((uintptr_t)x - __chnksize)
 
 static inline bin_t	*_get_bin(const chunk_t *chnk);
+static inline void	_update_flist(bin_t *bin, chunk_t *chnk);
 
 void	ft_free(void *ptr) {
 	chunk_t	*chnk;
@@ -43,6 +44,7 @@ void	ft_free(void *ptr) {
 	chnk->asize = 0;
 	bin->mfree += chnk->size;
 	__heap.mfree += chnk->size;
+	_update_flist(bin, chnk);
 }
 
 static inline bin_t	*_get_bin(const chunk_t *chnk) {
@@ -58,4 +60,18 @@ static inline bin_t	*_get_bin(const chunk_t *chnk) {
 		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)(bin + bin->mtotal)))
 			return bin;
 	return NULL;
+}
+
+static inline void	_update_flist(bin_t *bin, chunk_t *chnk) {
+	chunk_t	*tmp;
+
+	if (chnk < bin->free) {
+		chnk->nfr = bin->free;
+		bin->free = chnk;
+	} else {
+		for (tmp = bin->free; tmp->nfr && tmp->nfr < chnk; tmp = tmp->nfr)
+			;
+		chnk->nfr = tmp->nfr;
+		tmp->nfr = chnk;
+	}
 }

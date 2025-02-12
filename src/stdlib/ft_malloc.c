@@ -186,7 +186,7 @@ static inline void	*_alloc_small(const size_t n) {
 	bin_t	*bin;
 	u8		dfrg;
 
-	for (bin = __heap.sml; bin;) {
+	for (bin = __heap.sml, prev_bin = NULL; bin;) {
 		for (dfrg = 0, prev_chnk = NULL, chnk = bin->free; chnk; prev_chnk = chnk, chnk = chnk->nfr)
 			if (chnk->size >= n && !chnk->inuse)
 				break ;
@@ -195,11 +195,13 @@ static inline void	*_alloc_small(const size_t n) {
 		if (!dfrg && bin->mfree >= n) {
 			_defrag(bin);
 			dfrg = 1;
-		} else
+		} else {
+			prev_bin = bin;
 			bin = bin->next;
+		}
 	}
 	if (!bin || !chnk)
-		return _new_chunk(n, _CHNK_SMALL, bin);
+		return _new_chunk(n, _CHNK_SMALL, prev_bin);
 	_shrink_to_fit(chnk, n, _CHNK_SMALL_MIN_SIZE, bin);
 	if (prev_chnk)
 		prev_chnk->nfr = chnk->nfr;
@@ -222,7 +224,7 @@ static inline void	*_alloc_medium(const size_t n) {
 	bin_t	*bin;
 	u8		dfrg;
 
-	for (bin = __heap.med; bin;) {
+	for (bin = __heap.med, prev_bin = NULL; bin;) {
 		for (dfrg = 0, prev_chnk = NULL, chnk = bin->free; chnk; prev_chnk = chnk, chnk = chnk->nfr)
 			if (chnk->size >= n && !chnk->inuse)
 				break ;
@@ -231,11 +233,13 @@ static inline void	*_alloc_medium(const size_t n) {
 		if (!dfrg && bin->mfree >= n) {
 			_defrag(bin);
 			dfrg = 1;
-		} else
+		} else {
+			prev_bin = bin;
 			bin = bin->next;
+		}
 	}
 	if (!bin || !chnk)
-		return _new_chunk(n, _CHNK_MEDIUM, bin);
+		return _new_chunk(n, _CHNK_MEDIUM, prev_bin);
 	_shrink_to_fit(chnk, n, _CHNK_MEDIUM_MIN_SIZE, bin);
 	if (prev_chnk)
 		prev_chnk->nfr = chnk->nfr;
@@ -298,7 +302,7 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t ch
 		chnk->size -= _MALLOC_SMALL_MAX;
 	for (; chnk->size > _MALLOC_SMALL_MAX / 2 && chnk->size - n > _MALLOC_SMALL_MAX / 2; delta += _MALLOC_SMALL_MAX / 2)
 		chnk->size -= _MALLOC_SMALL_MAX / 2;
-	for (; chnk->size > 16 && chnk->size - n > 16; delta += 16)
+	for (; chnk->size > 16 && chnk->size - n >= 16; delta += 16)
 		chnk->size -= 16;
 	next = NULL;
 	if (chnk->nxt) {
@@ -314,10 +318,7 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t ch
 			.inuse = 0,
 			.cs2 = __cs2(bin)
 		};
-		__heap.mtotal -= __chnksize;
-		__heap.mfree -= __chnksize;
-		bin->musable -= __chnksize;
-		bin->mfree -= __chnksize;
+		chnk->nxt = next;
 	} else if (delta > chnk_min_size) {
 		next = _create_chunk(bin, (chunk_t *)__after(chnk, chnk->size), delta - __chnksize);
 		chnk->nxt = next;

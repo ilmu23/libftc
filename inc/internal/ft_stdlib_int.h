@@ -20,11 +20,12 @@ typedef struct bin	bin_t;
 typedef struct heap	heap_t;
 typedef struct chnk	chunk_t;
 
+# define __cs			(0xAAAAAAAA)
 # define __binsize		((sizeof(bin_t) % 16) ? (sizeof(bin_t) + (16 - (sizeof(bin_t) % 16))) : sizeof(bin_t))
 # define __chnksize		((sizeof(chunk_t) % 16) ? (sizeof(chunk_t) + (16 - (sizeof(chunk_t) % 16))) : sizeof(chunk_t))
 
-# define __cs1(x)	((uintptr_t)x & 0xFFFFFFFF)
-# define __cs2(x)	(((uintptr_t)x >> 32) & 0xFFFFFFFF)
+# define __cs1_loc(x, y)	(*(u32 *)((uintptr_t)x->addr + y))
+# define __cs2_loc(x)		(*(u32 *)((uintptr_t)x->addr - sizeof(x->cs2)))
 
 struct heap {
 	bin_t	*sml;

@@ -56,14 +56,12 @@ void	__heapinfo(void) {
 
 static inline chunk_t	*_create_chunk(bin_t *bin, chunk_t *chnk, const size_t size) {
 	*chnk = (chunk_t){
-		.cs1 = __cs1(bin),
 		.nxt = NULL,
 		.nfr = NULL,
 		.size = size,
 		.asize = 0,
 		.addr = (void *)__after(chnk, 0),
 		.inuse = 0,
-		.cs2 = __cs2(bin)
 	};
 	__heap.musable -= __chnksize;
 	__heap.mfree -= __chnksize;
@@ -309,14 +307,12 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t ch
 		oldnext = *chnk->nxt;
 		next = (chunk_t *)__after(chnk, chnk->size);
 		*next = (chunk_t){
-			.cs1 = __cs1(bin),
 			.nxt = oldnext.nxt,
 			.nfr = oldnext.nfr,
 			.size = oldnext.size + delta,
 			.asize = 0,
 			.addr = (void *)((uintptr_t)oldnext.addr - delta),
 			.inuse = 0,
-			.cs2 = __cs2(bin)
 		};
 		chnk->nxt = next;
 	} else if (delta > chnk_min_size) {
@@ -327,6 +323,9 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t ch
 		chnk->size += delta;
 	if (bin && next && !next->nxt)
 		bin->last = next;
+	if (chnk->nxt)
+		__cs1_loc(chnk, n) = __cs;
+	__cs2_loc(chnk) = __cs;
 }
 
 static inline void	_destroy_bin(bin_t **bin, bin_t *prev, const u8 type) {
@@ -365,14 +364,12 @@ static inline void	_defrag(bin_t *bin) {
 			bin->musable += __chnksize;
 			bin->mfree += __chnksize;
 			*chnk = (chunk_t){
-				.cs1 = __cs1(bin),
 				.nxt = tmp->nxt,
 				.nfr = tmp->nfr,
 				.size = chnk->size + tmp->size + __chnksize,
 				.asize = 0,
 				.addr = chnk->addr,
 				.inuse = 0,
-				.cs2 = __cs2(bin)
 			};
 		} else
 			chnk = tmp;

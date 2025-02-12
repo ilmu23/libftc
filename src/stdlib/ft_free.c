@@ -30,7 +30,7 @@ void	ft_free(void *ptr) {
 		// die
 		ft_exit(1);
 	}
-	if (!bin || chnk->cs1 != __cs1(bin) || chnk->cs2 != __cs2(bin)) {
+	if (!bin || __cs1_loc(chnk, chnk->asize) != __cs || __cs2_loc(chnk) != __cs) {
 		ft_write(2, "ft_free: heap corruption detected\n", 34);
 		// die
 		ft_exit(1);

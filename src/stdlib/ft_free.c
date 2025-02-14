@@ -65,7 +65,7 @@ static inline bin_t	*_get_bin(const chunk_t *chnk) {
 static inline void	_update_flist(bin_t *bin, chunk_t *chnk) {
 	chunk_t	*tmp;
 
-	if (chnk < bin->free) {
+	if (chnk < bin->free || !bin->free) {
 		chnk->nfr = bin->free;
 		bin->free = chnk;
 	} else {

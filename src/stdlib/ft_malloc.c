@@ -323,8 +323,7 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t ch
 		chnk->size += delta;
 	if (bin && next && !next->nxt)
 		bin->last = next;
-	if (chnk->nxt)
-		__cs1_loc(chnk, n) = __cs;
+	__cs1_loc(chnk, n) = __cs;
 	__cs2_loc(chnk) = __cs;
 }
 

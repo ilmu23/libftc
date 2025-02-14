@@ -62,9 +62,9 @@ extern heap_t	__heap;
 void	__heapinfo(void);
 
 # define _MALLOC_SMALL_MIN	1
-# define _MALLOC_SMALL_MAX	512
-# define _MALLOC_MEDIUM_MIN	513
-# define _MALLOC_MEDIUM_MAX	4096
+# define _MALLOC_SMALL_MAX	512 - __binsize - __chnksize
+# define _MALLOC_MEDIUM_MIN	_MALLOC_SMALL_MAX + 1
+# define _MALLOC_MEDIUM_MAX	4096 - __binsize - __chnksize
 
 # define _CHNK_SMALL			1
 # define _CHNK_MEDIUM			2

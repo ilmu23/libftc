@@ -23,7 +23,7 @@ void	ft_free(void *ptr) {
 		return ;
 	chnk = (chunk_t *)__get_chnk(ptr);
 	bin = _get_bin(chnk);
-	for (tmp = bin->first; tmp < chnk; tmp = tmp->nxt)
+	for (tmp = bin->first; tmp && tmp < chnk; tmp = tmp->nxt)
 		;
 	if (tmp != chnk) {
 		ft_write(2, "ft_free(): invalid pointer\n", 27);
@@ -52,15 +52,15 @@ static inline bin_t	*_get_bin(const chunk_t *chnk) {
 	bin_t	*bin;
 
 	for (bin = __heap.sml; bin; bin = bin->next)
-		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)(bin + bin->mtotal)))
+		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)((uintptr_t)bin + bin->mtotal)))
 			return bin;
 	for (bin = __heap.med; bin; bin = bin->next)
-		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)(bin + bin->mtotal)))
+		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)((uintptr_t)bin + bin->mtotal)))
 			return bin;
 	for (bin = __heap.lrg; bin; bin = bin->next)
-		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)(bin + bin->mtotal)))
+		if (__inrange((uintptr_t)chnk, (uintptr_t)bin, (uintptr_t)((uintptr_t)bin + bin->mtotal)))
 			return bin;
-	return NULL;
+	return NULL; // replace with abort (invalid pointer)
 }
 
 static inline void	_update_flist(bin_t *bin, chunk_t *chnk) {

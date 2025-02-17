@@ -339,7 +339,9 @@ static inline void	_destroy_bin(bin_t **bin, bin_t *prev, const u8 type) {
 	prev->next = *bin;
 	if (!*bin)
 		*bin = prev;
+	__heap.mfree -= _bin->mfree;
 	__heap.mtotal -= _bin->mtotal;
+	__heap.musable -= _bin->musable;
 	ft_munmap(_bin, _bin->mtotal);
 }
 

@@ -42,6 +42,7 @@ void	ft_free(void *ptr) {
 	}
 	chnk->inuse = 0;
 	chnk->asize = 0;
+	bin->fcount++;
 	bin->mfree += chnk->size;
 	__heap.mfree += chnk->size;
 	_update_flist(bin, chnk);

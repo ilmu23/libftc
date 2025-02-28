@@ -44,6 +44,7 @@ struct bin {
 	size_t	musable;
 	size_t	mfree;
 	bin_t	*next;
+	u8		fcount;
 };
 
 struct chnk {

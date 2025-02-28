@@ -67,6 +67,7 @@ static inline chunk_t	*_create_chunk(bin_t *bin, chunk_t *chnk, const size_t siz
 	__heap.mfree -= __chnksize;
 	bin->musable -= __chnksize;
 	bin->mfree -= __chnksize;
+	bin->fcount++;
 	return chnk;
 }
 
@@ -122,6 +123,7 @@ static inline void	*_extend_bin(const size_t n, const u8 type, bin_t *bin, const
 	__heap.mfree -= chnk->size;
 	bin->free = chnk->nxt;
 	bin->last = chnk->nxt;
+	bin->fcount--;
 	return chnk;
 }
 
@@ -136,7 +138,8 @@ static inline void	*_init_bin(const size_t n, const u8 type, bin_t *bin, const s
 		.mtotal = mtotal,
 		.musable = mtotal - __binsize,
 		.mfree = mtotal - __binsize,
-		.next = NULL
+		.next = NULL,
+		.fcount = 0
 	};
 	chnk = _create_chunk(bin, (chunk_t *)__after(bin, 0), mtotal - __binsize - __chnksize);
 	bin->first = chnk;
@@ -174,6 +177,7 @@ static inline void	*_init_bin(const size_t n, const u8 type, bin_t *bin, const s
 	bin->mfree -= chnk->size;
 	__heap.mfree -= chnk->size;
 	bin->free = chnk->nxt;
+	bin->fcount--;
 	return chnk;
 }
 
@@ -190,7 +194,7 @@ static inline void	*_alloc_small(const size_t n) {
 				break ;
 		if (chnk)
 			break ;
-		if (!dfrg && bin->mfree >= n) {
+		if (!dfrg && bin->free && bin->mfree + (__chnksize * (bin->fcount - 1)) >= n) {
 			_defrag(bin);
 			dfrg = 1;
 		} else {
@@ -207,6 +211,7 @@ static inline void	*_alloc_small(const size_t n) {
 		bin->free = chnk->nfr;
 	chnk->inuse = 1;
 	chnk->asize = n;
+	bin->fcount--;
 	bin->mfree -= chnk->size;
 	__heap.mfree -= chnk->size;
 	for (prev_bin = bin, bin = bin->next; bin; prev_bin = bin, bin = bin->next)
@@ -228,7 +233,7 @@ static inline void	*_alloc_medium(const size_t n) {
 				break ;
 		if (chnk)
 			break ;
-		if (!dfrg && bin->mfree >= n) {
+		if (!dfrg && bin->free && bin->mfree + (__chnksize * (bin->fcount - 1)) >= n) {
 			_defrag(bin);
 			dfrg = 1;
 		} else {
@@ -245,6 +250,7 @@ static inline void	*_alloc_medium(const size_t n) {
 		bin->free = chnk->nfr;
 	chnk->inuse = 1;
 	chnk->asize = n;
+	bin->fcount--;
 	bin->mfree -= chnk->size;
 	__heap.mfree -= chnk->size;
 	for (prev_bin = bin, bin = bin->next; bin; prev_bin = bin, bin = bin->next)
@@ -266,7 +272,7 @@ static inline void	*_alloc_large(const size_t n) {
 				break ;
 		if (chnk)
 			break ;
-		if (!dfrg && bin->mfree >= n) {
+		if (!dfrg && bin->free && bin->mfree + (__chnksize * (bin->fcount - 1)) >= n) {
 			_defrag(bin);
 			dfrg = 1;
 		} else {
@@ -284,6 +290,7 @@ static inline void	*_alloc_large(const size_t n) {
 		bin->free = chnk->nfr;
 	chnk->inuse = 1;
 	chnk->asize = n;
+	bin->fcount--;
 	bin->mfree -= chnk->size;
 	__heap.mfree -= chnk->size;
 	return chnk;
@@ -362,6 +369,7 @@ static inline void	_defrag(bin_t *bin) {
 			__heap.mfree += __chnksize;
 			bin->musable += __chnksize;
 			bin->mfree += __chnksize;
+			bin->fcount--;
 			*chnk = (chunk_t){
 				.nxt = tmp->nxt,
 				.nfr = tmp->nfr,
@@ -408,7 +416,9 @@ static inline void	_print_bin(const bin_t *bin, const u32 n, const u8 type) {
 	ft_putunbr(bin->musable);
 	ft_putstr("B\n\t\tFREE MEMORY:   ");
 	ft_putunbr(bin->mfree);
-	ft_putstr("B\n\n");
+	ft_putstr("B\n\t\tFREE CHUNKS:   ");
+	ft_putunbr(bin->fcount);
+	ft_putstr("\n\n");
 	for (chnk = bin->first, _n = 0; chnk; chnk = chnk->nxt, _n++)
 		_print_chnk(chnk, _n);
 }

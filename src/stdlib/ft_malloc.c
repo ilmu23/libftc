@@ -23,9 +23,6 @@ static inline void		*_alloc_large(const size_t n);
 static inline void		_shrink_to_fit(chunk_t *chnk, const size_t n, const size_t chnk_min_size, bin_t *bin);
 static inline void		_destroy_bin(bin_t **bin, bin_t *prev, const u8 type);
 static inline void		_defrag(bin_t *bin);
-static inline void		_print_bin(const bin_t *bin, const u32 n, const u8 type);
-static inline void		_print_chnk(const chunk_t *chnk, const u32 n);
-static inline void		_print_heap(void);
 
 void	*ft_malloc(size_t n) {
 	chunk_t	*out;
@@ -39,19 +36,6 @@ void	*ft_malloc(size_t n) {
 	else
 		out =  _alloc_large(n);
 	return (out) ? out->addr : NULL;
-}
-
-void	__heapinfo(void) {
-	bin_t	*bin;
-	u32		n;
-
-	_print_heap();
-	for (bin = __heap.sml, n = 0; bin; bin = bin->next, n++)
-		_print_bin(bin, n, _BIN_SMALL);
-	for (bin = __heap.med, n = 0; bin; bin = bin->next, n++)
-		_print_bin(bin, n, _BIN_MEDIUM);
-	for (bin = __heap.lrg, n = 0; bin; bin = bin->next, n++)
-		_print_bin(bin, n, _BIN_LARGE);
 }
 
 static inline chunk_t	*_create_chunk(bin_t *bin, chunk_t *chnk, const size_t size) {
@@ -392,55 +376,4 @@ static inline void	_defrag(bin_t *bin) {
 		if (!chnk->nxt)
 			bin->last = chnk;
 	}
-}
-
-static inline void	_print_bin(const bin_t *bin, const u32 n, const u8 type) {
-	chunk_t	*chnk;
-	u32		_n;
-
-	switch (type) {
-		case _BIN_SMALL:
-			ft_putstr("\tSMALL BIN ");
-			break ;
-		case _BIN_MEDIUM:
-			ft_putstr("\tMEDIUM BIN ");
-			break ;
-		case _BIN_LARGE:
-			ft_putstr("\tLARGE BIN ");
-			break ;
-	}
-	ft_putunbr(n);
-	ft_putstr("\n\t\tTOTAL MEMORY:  ");
-	ft_putunbr(bin->mtotal);
-	ft_putstr("B\n\t\tUSABLE MEMORY: ");
-	ft_putunbr(bin->musable);
-	ft_putstr("B\n\t\tFREE MEMORY:   ");
-	ft_putunbr(bin->mfree);
-	ft_putstr("B\n\t\tFREE CHUNKS:   ");
-	ft_putunbr(bin->fcount);
-	ft_putstr("\n\n");
-	for (chnk = bin->first, _n = 0; chnk; chnk = chnk->nxt, _n++)
-		_print_chnk(chnk, _n);
-}
-
-static inline void	_print_chnk(const chunk_t *chnk, const u32 n) {
-	ft_putstr("\t\tCHUNK ");
-	ft_putunbr(n);
-	ft_putstr("\n\t\t\tALLOC SIZE: ");
-	ft_putunbr(chnk->asize);
-	ft_putstr("B\n\t\t\tTOTAL SIZE: ");
-	ft_putunbr(chnk->size);
-	ft_putstr("B\n\t\t\tIN USE: ");
-	ft_putstr((chnk->inuse) ? "YES\n\n" : "NO\n\n");
-}
-
-static inline void	_print_heap(void) {
-	ft_putstr("---HEAPINFO---\n");
-	ft_putstr("\tTOTAL MAPPED MEMORY: ");
-	ft_putunbr(__heap.mtotal);
-	ft_putstr("B\n\tTOTAL USABLE MEMORY: ");
-	ft_putunbr(__heap.musable);
-	ft_putstr("B\n\tTOTAL FREE MEMORY:   ");
-	ft_putunbr(__heap.mfree);
-	ft_putstr("B\n\n");
 }

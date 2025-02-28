@@ -49,6 +49,7 @@ MMANFILES	=	ft_mlockall.c \
 STDLIBFILES	=	ft_exit.c \
 				ft_free.c \
 				ft_malloc.c \
+				__heapinfo.c \
 				__heapvis.c
 
 STRINGFILES	=	ft_strlen.c

@@ -5,16 +5,10 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft.h>>
+// <<ft_toupper.c>>
 
-#ifndef LIBFT_H
-# define LIBFT_H
-# include "ft_stdlib.h"
-# include "ft_string.h"
-# include "ft_unistd.h"
-# include "libft_is.h"
-# include "libft_to.h"
-# include "libft_put.h"
-# include "internal/libft_defs.h"
+#include "libft.h"
 
-#endif
+i32	ft_toupper(const i32 c) {
+	return ft_islower(c) ? c & ~0x20 : c;
+}

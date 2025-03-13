@@ -62,7 +62,26 @@ UNISTDFILES	=	ft_sysconf.c \
 # LFT
 
 LFTDIR	=	lft
+ISDIR	=	$(LFTDIR)/is
+TODIR	=	$(LFTDIR)/to
 PUTDIR	=	$(LFTDIR)/put
+
+ISFILES		=	ft_isalnum.c \
+				ft_isalpha.c \
+				ft_isascii.c \
+				ft_isblank.c \
+				ft_iscntrl.c \
+				ft_isdigit.c \
+				ft_isgraph.c \
+				ft_islower.c \
+				ft_isprint.c \
+				ft_ispunct.c \
+				ft_isspace.c \
+				ft_isupper.c \
+				ft_isxdigit.c
+
+TOFILES		=	ft_tolower.c \
+				ft_toupper.c
 
 PUTFILES	=	ft_putchar.c \
 				ft_putchar_fd.c \
@@ -75,7 +94,9 @@ PUTFILES	=	ft_putchar.c \
 				ft_putunbr.c \
 				ft_putunbr_fd.c
 
-LFTFILES	=	$(addprefix $(PUTDIR)/, $(PUTFILES))
+LFTFILES	=	$(addprefix $(ISDIR)/, $(ISFILES)) \
+				$(addprefix $(TODIR)/, $(TOFILES)) \
+				$(addprefix $(PUTDIR)/, $(PUTFILES))
 
 # /LFT
 
@@ -103,6 +124,8 @@ $(NAME): $(OBJDIR) $(ASMOBJS) $(COBJS)
 
 $(OBJDIR):
 	@printf "\e[34;1mLIBFT >\e[m Creating objdirs\n" $@
+	@mkdir -p $(OBJDIR)/$(ISDIR)
+	@mkdir -p $(OBJDIR)/$(TODIR)
 	@mkdir -p $(OBJDIR)/$(PUTDIR)
 	@mkdir -p $(OBJDIR)/$(MMANDIR)
 	@mkdir -p $(OBJDIR)/$(STDLIBDIR)

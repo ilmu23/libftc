@@ -5,36 +5,10 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft_str.h>>
+// <<ft_strstr.c>>
 
-#ifndef LIBFT_STR_H
-# define LIBFT_STR_H
-# include "internal/libft_defs.h"
+#include "libft.h"
 
-char	*ft_strdup(const char *s);
-char	*ft_strndup(const char *s, size_t n);
-
-char	*ft_stpcpy(char * restrict dst, const char * restrict src);
-char	*ft_strcat(char * restrict dst, const char * restrict src);
-char	*ft_strcpy(char * restrict dst, const char * restrict src);
-
-char	*ft_stpncpy(char * restrict dst, const char * restrict src, size_t n);
-char	*ft_strncat(char * restrict dst, const char * restrict src, size_t n);
-char	*ft_strncpy(char * restrict dst, const char * restrict src, size_t n);
-
-char	*ft_strchr(const char *s, const i32 c);
-char	*ft_strrchr(const char *s, const i32 c);
-
-char	*ft_strstr(const char *s1, const char *s2);
-char	*ft_strnstr(const char *s1, const char *s2, size_t n);
-
-size_t	ft_strlcat(char * restrict dst, const char * restrict src, size_t n);
-size_t	ft_strlcpy(char * restrict dst, const char * restrict src, size_t n);
-
-size_t	ft_strlen(const char *s);
-size_t	ft_strnlen(const char *s, size_t n);
-
-i32		ft_strcmp(const char *s1, const char *s2);
-i32		ft_strncmp(const char *s1, const char *s2, size_t n);
-
-#endif
+char	*ft_strstr(const char *s1, const char *s2) {
+	return ft_strnstr(s1, s2, SIZE_MAX);
+}

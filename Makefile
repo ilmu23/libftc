@@ -93,20 +93,28 @@ PUTFILES	=	ft_putchar.c \
 				ft_putunbr.c \
 				ft_putunbr_fd.c
 
-MEMFILES	=	ft_memcpy.c \
+MEMFILES	=	ft_bzero.c \
+				ft_memchr.c \
+				ft_memcmp.c \
+				ft_memcpy.c \
 				ft_memmove.c \
+				ft_memrchr.c \
 				ft_memset.c
 
 STRFILES	=	ft_stpcpy.c \
 				ft_stpncpy.c \
 				ft_strcat.c \
+				ft_strchr.c \
+				ft_strcmp.c \
 				ft_strcpy.c \
 				ft_strlcat.c \
 				ft_strlcpy.c \
 				ft_strlen.c \
 				ft_strncat.c \
+				ft_strncmp.c \
 				ft_strncpy.c \
-				ft_strnlen.c
+				ft_strnlen.c \
+				ft_strrchr.c
 
 LFTFILES	=	$(addprefix $(ISDIR)/, $(ISFILES)) \
 				$(addprefix $(TODIR)/, $(TOFILES)) \

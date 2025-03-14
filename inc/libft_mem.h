@@ -5,30 +5,16 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft_defs.h>>
+// <<libft_mem.h>>
 
-#ifndef LIBFT_DEFS_H
-# define LIBFT_DEFS_H
-# include "ft_stddef.h"
-# include "ft_stdint.h"
+#ifndef LIBFT_MEM_H
+# define LIBFT_MEM_H
+# include "internal/libft_defs.h"
 
-// cast to/from pointer types
-# define pcast(t, x)	((t)(uintptr_t)x)
+void	*ft_memcpy(void * restrict dst, const void * restrict src, size_t n);
 
-// offset pointer by n bytes
-# define poffset(p, n)	((void *)((uintptr_t)p + (n)))
+void	*ft_memmove(void * dst, const void * src, size_t n);
 
-// check if x is between y and z
-# define inrange(x, y, z)	(((x >= y) & (x <= z)) ? 1 : 0)
-
-typedef int8_t		i8;
-typedef	int16_t		i16;
-typedef	int32_t		i32;
-typedef	int64_t		i64;
-
-typedef uint8_t		u8;
-typedef	uint16_t	u16;
-typedef	uint32_t	u32;
-typedef	uint64_t	u64;
+void	*ft_memset(void *s, const i32 c, size_t n);
 
 #endif

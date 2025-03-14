@@ -34,7 +34,6 @@ INCDIR	=	inc
 
 MMANDIR		=	mman
 STDLIBDIR	=	stdlib
-STRINGDIR	=	string
 UNISTDDIR	=	unistd
 
 MMANFILES	=	ft_mlockall.c \
@@ -52,8 +51,6 @@ STDLIBFILES	=	ft_exit.c \
 				__heapinfo.c \
 				__heapvis.c
 
-STRINGFILES	=	ft_strlen.c
-
 UNISTDFILES	=	ft_sysconf.c \
 				ft_write.c
 
@@ -64,7 +61,9 @@ UNISTDFILES	=	ft_sysconf.c \
 LFTDIR	=	lft
 ISDIR	=	$(LFTDIR)/is
 TODIR	=	$(LFTDIR)/to
+MEMDIR	=	$(LFTDIR)/mem
 PUTDIR	=	$(LFTDIR)/put
+STRDIR	=	$(LFTDIR)/str
 
 ISFILES		=	ft_isalnum.c \
 				ft_isalpha.c \
@@ -94,9 +93,26 @@ PUTFILES	=	ft_putchar.c \
 				ft_putunbr.c \
 				ft_putunbr_fd.c
 
+MEMFILES	=	ft_memcpy.c \
+				ft_memmove.c \
+				ft_memset.c
+
+STRFILES	=	ft_stpcpy.c \
+				ft_stpncpy.c \
+				ft_strcat.c \
+				ft_strcpy.c \
+				ft_strlcat.c \
+				ft_strlcpy.c \
+				ft_strlen.c \
+				ft_strncat.c \
+				ft_strncpy.c \
+				ft_strnlen.c
+
 LFTFILES	=	$(addprefix $(ISDIR)/, $(ISFILES)) \
 				$(addprefix $(TODIR)/, $(TOFILES)) \
-				$(addprefix $(PUTDIR)/, $(PUTFILES))
+				$(addprefix $(PUTDIR)/, $(PUTFILES)) \
+				$(addprefix $(MEMDIR)/, $(MEMFILES)) \
+				$(addprefix $(STRDIR)/, $(STRFILES))
 
 # /LFT
 
@@ -106,7 +122,6 @@ ASMFILES	=	_start.asm \
 CFILES		=	$(LFTFILES) \
 				$(addprefix $(MMANDIR)/, $(MMANFILES)) \
 				$(addprefix $(STDLIBDIR)/, $(STDLIBFILES)) \
-				$(addprefix $(STRINGDIR)/, $(STRINGFILES)) \
 				$(addprefix $(UNISTDDIR)/, $(UNISTDFILES))
 
 ASMSRCS	=	$(addprefix $(SRCDIR)/, $(ASMFILES))
@@ -127,9 +142,10 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(ISDIR)
 	@mkdir -p $(OBJDIR)/$(TODIR)
 	@mkdir -p $(OBJDIR)/$(PUTDIR)
+	@mkdir -p $(OBJDIR)/$(MEMDIR)
+	@mkdir -p $(OBJDIR)/$(STRDIR)
 	@mkdir -p $(OBJDIR)/$(MMANDIR)
 	@mkdir -p $(OBJDIR)/$(STDLIBDIR)
-	@mkdir -p $(OBJDIR)/$(STRINGDIR)
 	@mkdir -p $(OBJDIR)/$(UNISTDDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.asm

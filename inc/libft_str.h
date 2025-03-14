@@ -5,30 +5,24 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft_defs.h>>
+// <<libft_str.h>>
 
-#ifndef LIBFT_DEFS_H
-# define LIBFT_DEFS_H
+#ifndef LIBFT_STR_H
+# define LIBFT_STR_H
 # include "ft_stddef.h"
-# include "ft_stdint.h"
 
-// cast to/from pointer types
-# define pcast(t, x)	((t)(uintptr_t)x)
+char	*ft_stpcpy(char * restrict dst, const char * restrict src);
+char	*ft_strcat(char * restrict dst, const char * restrict src);
+char	*ft_strcpy(char * restrict dst, const char * restrict src);
 
-// offset pointer by n bytes
-# define poffset(p, n)	((void *)((uintptr_t)p + (n)))
+char	*ft_stpncpy(char * restrict dst, const char * restrict src, size_t n);
+char	*ft_strncat(char * restrict dst, const char * restrict src, size_t n);
+char	*ft_strncpy(char * restrict dst, const char * restrict src, size_t n);
 
-// check if x is between y and z
-# define inrange(x, y, z)	(((x >= y) & (x <= z)) ? 1 : 0)
+size_t	ft_strlcat(char * restrict dst, const char * restrict src, size_t n);
+size_t	ft_strlcpy(char * restrict dst, const char * restrict src, size_t n);
 
-typedef int8_t		i8;
-typedef	int16_t		i16;
-typedef	int32_t		i32;
-typedef	int64_t		i64;
-
-typedef uint8_t		u8;
-typedef	uint16_t	u16;
-typedef	uint32_t	u32;
-typedef	uint64_t	u64;
+size_t	ft_strlen(const char *s);
+size_t	ft_strnlen(const char *s, size_t n);
 
 #endif

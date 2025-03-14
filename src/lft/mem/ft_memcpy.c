@@ -5,30 +5,18 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft_defs.h>>
+// <<ft_memcpy.c>>
 
-#ifndef LIBFT_DEFS_H
-# define LIBFT_DEFS_H
-# include "ft_stddef.h"
-# include "ft_stdint.h"
+#include "libft.h"
 
-// cast to/from pointer types
-# define pcast(t, x)	((t)(uintptr_t)x)
+void	*ft_memcpy(void * restrict dst, const void * restrict src, size_t n) {
+	size_t	i;
 
-// offset pointer by n bytes
-# define poffset(p, n)	((void *)((uintptr_t)p + (n)))
-
-// check if x is between y and z
-# define inrange(x, y, z)	(((x >= y) & (x <= z)) ? 1 : 0)
-
-typedef int8_t		i8;
-typedef	int16_t		i16;
-typedef	int32_t		i32;
-typedef	int64_t		i64;
-
-typedef uint8_t		u8;
-typedef	uint16_t	u16;
-typedef	uint32_t	u32;
-typedef	uint64_t	u64;
-
-#endif
+	if (!dst | !src)
+		return dst;
+	for (i = 0; n >= 8; i += 8, n -= 8)
+		*pcast(u64 *, poffset(dst, i)) = *pcast(u64 *, poffset(src, i));
+	for (; n; i++, n--)
+		*pcast(u8 *, poffset(dst, i)) = *pcast(u8 *, poffset(src, i));
+	return dst;
+}

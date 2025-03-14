@@ -5,30 +5,23 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft_defs.h>>
+// <<ft_memmove.c>>
 
-#ifndef LIBFT_DEFS_H
-# define LIBFT_DEFS_H
-# include "ft_stddef.h"
-# include "ft_stdint.h"
+#include "libft.h"
 
-// cast to/from pointer types
-# define pcast(t, x)	((t)(uintptr_t)x)
+#define _FWD	0
+#define _BCK	1
 
-// offset pointer by n bytes
-# define poffset(p, n)	((void *)((uintptr_t)p + (n)))
+void	*ft_memmove(void *dst, const void *src, size_t n) {
+	size_t	i;
+	u8		d;
 
-// check if x is between y and z
-# define inrange(x, y, z)	(((x >= y) & (x <= z)) ? 1 : 0)
-
-typedef int8_t		i8;
-typedef	int16_t		i16;
-typedef	int32_t		i32;
-typedef	int64_t		i64;
-
-typedef uint8_t		u8;
-typedef	uint16_t	u16;
-typedef	uint32_t	u32;
-typedef	uint64_t	u64;
-
-#endif
+	if (!dst | !src)
+		return dst;
+	d = (dst < src) ? _FWD : _BCK;
+	for (i = (d == _FWD) ? 0 : n; n >= 8; i = (d == _FWD) ? i + 8 : i - 8, n -= 8)
+		*pcast(u64 *, poffset(dst, ((d == _FWD) ? i : i - 8))) = *pcast(u64 *, poffset(src, ((d == _FWD) ? i : i - 8)));
+	for (; n; i = (d == _FWD) ? i + 1 : i - 1, n--)
+		*pcast(u8 *, poffset(dst, ((d == _FWD) ? i : i - 1))) = *pcast(u8 *, poffset(src, ((d == _FWD) ? i : i - 1)));
+	return dst;
+}

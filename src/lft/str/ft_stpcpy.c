@@ -5,30 +5,15 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft_defs.h>>
+// <<ft_stpcpy.c>>
 
-#ifndef LIBFT_DEFS_H
-# define LIBFT_DEFS_H
-# include "ft_stddef.h"
-# include "ft_stdint.h"
+#include "libft.h"
 
-// cast to/from pointer types
-# define pcast(t, x)	((t)(uintptr_t)x)
+char	*ft_stpcpy(char * restrict dst, const char * restrict src) {
+	size_t	len;
 
-// offset pointer by n bytes
-# define poffset(p, n)	((void *)((uintptr_t)p + (n)))
-
-// check if x is between y and z
-# define inrange(x, y, z)	(((x >= y) & (x <= z)) ? 1 : 0)
-
-typedef int8_t		i8;
-typedef	int16_t		i16;
-typedef	int32_t		i32;
-typedef	int64_t		i64;
-
-typedef uint8_t		u8;
-typedef	uint16_t	u16;
-typedef	uint32_t	u32;
-typedef	uint64_t	u64;
-
-#endif
+	len = ft_strlen(src);
+	ft_memcpy(dst, src, len);
+	dst[len] = '\0';
+	return &dst[len];
+}

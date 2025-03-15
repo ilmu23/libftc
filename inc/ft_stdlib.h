@@ -13,7 +13,8 @@
 # include "ft_types.h"
 # include "ft_stddef.h"
 
-void	*ft_malloc(size_t n);
+void	*ft_malloc(size_t sz);
+void	*ft_realloc(void *ptr, size_t sz);
 
 void	ft_exit(int estat);
 void	ft_free(void *ptr);

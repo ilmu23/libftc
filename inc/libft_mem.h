@@ -11,6 +11,8 @@
 # define LIBFT_MEM_H
 # include "internal/libft_defs.h"
 
+void	*ft_calloc(size_t n, size_t sz);
+
 void	*ft_memchr(const void *s, const i32 c, size_t n);
 void	*ft_memrchr(const void *s, const i32 c, size_t n);
 

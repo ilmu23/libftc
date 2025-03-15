@@ -31,6 +31,8 @@ typedef struct chnk	chunk_t;
 # define __cs1_loc(x, y)	(*(u32 *)((uintptr_t)x->addr + y))
 # define __cs2_loc(x)		(*(u32 *)((uintptr_t)x->addr - sizeof(x->cs2)))
 
+#define __get_chnk(x)	((chunk_t *)((uintptr_t)x - __chnksize))
+
 struct heap {
 	bin_t	*sml;
 	bin_t	*med;
@@ -63,6 +65,8 @@ struct chnk {
 };
 
 extern heap_t	__heap;
+
+bin_t	*__get_bin(const chunk_t *chnk);
 
 void	__heapinfo(void);
 void	__heapvis(void);

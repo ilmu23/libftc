@@ -48,6 +48,8 @@ MMANFILES	=	ft_mlockall.c \
 STDLIBFILES	=	ft_exit.c \
 				ft_free.c \
 				ft_malloc.c \
+				ft_realloc.c \
+				__get_bin.c \
 				__heapinfo.c \
 				__heapvis.c
 
@@ -94,6 +96,7 @@ PUTFILES	=	ft_putchar.c \
 				ft_putunbr_fd.c
 
 MEMFILES	=	ft_bzero.c \
+				ft_calloc.c \
 				ft_memchr.c \
 				ft_memcmp.c \
 				ft_memcpy.c \

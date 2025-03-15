@@ -5,56 +5,53 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<ft_free.c>>
+// <<ft_realloc.c>>
 
 #include "internal/ft_stdlib_int.h"
 
-static inline void	_update_flist(bin_t *bin, chunk_t *chnk);
+static inline u8	_resize(chunk_t *chnk, const size_t sz);
 
-void	ft_free(void *ptr) {
+void	*ft_realloc(void *ptr, size_t sz) {
 	chunk_t	*chnk;
-	chunk_t	*tmp;
-	bin_t	*bin;
+	void	*tmp;
 
-	if (!ptr)
-		return ;
 	chnk = __get_chnk(ptr);
-	bin = __get_bin(chnk);
-	for (tmp = (bin) ? bin->first : NULL; tmp && tmp < chnk; tmp = tmp->nxt)
-		;
-	if (tmp != chnk) {
-		ft_write(2, "ft_free(): invalid pointer\n", 27);
-		// die
-		ft_exit(1);
+	if (!_resize(chnk, sz)) {
+		tmp = ft_memcpy(ft_malloc(sz), ptr, sz);
+		ft_free(ptr);
+		ptr = tmp;
 	}
-	if (__cs1_loc(chnk, chnk->asize) != __cs || __cs2_loc(chnk) != __cs) {
-		ft_write(2, "ft_free: heap corruption detected\n", 34);
-		// die
-		ft_exit(1);
-	}
-	if (!chnk->inuse) {
-		ft_write(2, "ft_free: double free\n", 21);
-		// die
-		ft_exit(1);
-	}
-	chnk->inuse = 0;
-	chnk->asize = 0;
-	bin->fcount++;
-	bin->mfree += chnk->size;
-	__heap.mfree += chnk->size;
-	_update_flist(bin, chnk);
+	return ptr;
 }
 
-static inline void	_update_flist(bin_t *bin, chunk_t *chnk) {
+static inline u8	_resize(chunk_t *chnk, const size_t sz) {
+	chunk_t	*_chnk;
 	chunk_t	*tmp;
+	size_t	avail;
+	bin_t	*bin;
 
-	if (chnk < bin->free || !bin->free) {
-		chnk->nfr = bin->free;
-		bin->free = chnk;
-	} else {
-		for (tmp = bin->free; tmp->nfr && tmp->nfr < chnk; tmp = tmp->nfr)
-			;
-		chnk->nfr = tmp->nfr;
-		tmp->nfr = chnk;
+	if (sz < chnk->size) {
+		chnk->asize = sz;
+		__cs1_loc(chnk, sz) = __cs;
+		return 1;
 	}
+	for (avail = chnk->size, _chnk = chnk->nxt; _chnk && !_chnk->inuse; _chnk = _chnk->nxt)
+		avail += _chnk->size + __chnksize;
+	if (avail >= sz) {
+		tmp = chnk->nfr;
+		bin = __get_bin(chnk);
+		while (chnk->nfr && chnk->nfr <= _chnk) {
+			chnk->nfr = chnk->nfr->nfr;
+			bin->musable += __chnksize;
+			bin->fcount--;
+		}
+		if (bin->free == tmp)
+			bin->free = chnk->nfr;
+		__cs1_loc(chnk, sz) = __cs;
+		chnk->size = avail;
+		chnk->nxt = _chnk;
+		chnk->asize = sz;
+		return 1;
+	}
+	return 0;
 }

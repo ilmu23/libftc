@@ -5,33 +5,27 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft_defs.h>>
+// <<ft_utoa_base.c>>
 
-#ifndef LIBFT_DEFS_H
-# define LIBFT_DEFS_H
-# include "ft_stddef.h"
-# include "ft_stdint.h"
+#include "libft.h"
 
-// swap values of x and y
-# define swap(x, y)	(x ^= y, y ^= x, x ^= y)
+#define _MAXLEN	65
 
-// cast to/from pointer types
-# define pcast(t, x)	((t)(uintptr_t)x)
+char	*ft_utoa_base(u64 n, const char *base) {
+	size_t	i;
+	char	*out;
+	u8		blen;
 
-// offset pointer by n bytes
-# define poffset(p, n)	((void *)((uintptr_t)p + (n)))
-
-// check if x is between y and z
-# define inrange(x, y, z)	(((x >= y) & (x <= z)) ? 1 : 0)
-
-typedef int8_t		i8;
-typedef	int16_t		i16;
-typedef	int32_t		i32;
-typedef	int64_t		i64;
-
-typedef uint8_t		u8;
-typedef	uint16_t	u16;
-typedef	uint32_t	u32;
-typedef	uint64_t	u64;
-
-#endif
+	blen = ft_strnlen(base, UINT8_MAX);
+	out = (blen >= 2) ? ft_malloc(_MAXLEN) : NULL;
+	if (out) {
+		blen = ft_strnlen(base, UINT8_MAX);
+		for (i = 0; n >= blen; n /= blen, i++)
+			out[i] = base[n % blen];
+		out[i++] = base[n];
+		out[i] = '\0';
+		out = ft_realloc(out, ft_strlen(out) + 1);
+		ft_strrev(out);
+	}
+	return out;
+}

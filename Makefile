@@ -81,8 +81,18 @@ ISFILES		=	ft_isalnum.c \
 				ft_isupper.c \
 				ft_isxdigit.c
 
-TOFILES		=	ft_tolower.c \
-				ft_toupper.c
+TOFILES		=	ft_itoa16.c \
+				ft_itoa32.c \
+				ft_itoa64.c \
+				ft_itoa8.c \
+				ft_itoa_base.c \
+				ft_tolower.c \
+				ft_toupper.c \
+				ft_utoa16.c \
+				ft_utoa32.c \
+				ft_utoa64.c \
+				ft_utoa8.c \
+				ft_utoa_base.c
 
 PUTFILES	=	ft_putchar.c \
 				ft_putchar_fd.c \
@@ -121,6 +131,7 @@ STRFILES	=	ft_stpcpy.c \
 				ft_strnlen.c \
 				ft_strnstr.c \
 				ft_strrchr.c \
+				ft_strrev.c \
 				ft_strstr.c
 
 LFTFILES	=	$(addprefix $(ISDIR)/, $(ISFILES)) \

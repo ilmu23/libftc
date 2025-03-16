@@ -34,6 +34,8 @@ size_t	ft_strlcpy(char * restrict dst, const char * restrict src, size_t n);
 size_t	ft_strlen(const char *s);
 size_t	ft_strnlen(const char *s, size_t n);
 
+void	ft_strrev(char *s);
+
 i32		ft_strcmp(const char *s1, const char *s2);
 i32		ft_strncmp(const char *s1, const char *s2, size_t n);
 

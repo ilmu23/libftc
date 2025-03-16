@@ -121,9 +121,11 @@ STRFILES	=	ft_stpcpy.c \
 				ft_strcmp.c \
 				ft_strcpy.c \
 				ft_strdup.c \
+				ft_strjoin.c \
 				ft_strlcat.c \
 				ft_strlcpy.c \
 				ft_strlen.c \
+				ft_strmod.c \
 				ft_strncat.c \
 				ft_strncmp.c \
 				ft_strncpy.c \
@@ -132,7 +134,9 @@ STRFILES	=	ft_stpcpy.c \
 				ft_strnstr.c \
 				ft_strrchr.c \
 				ft_strrev.c \
-				ft_strstr.c
+				ft_strstr.c \
+				ft_strtrim.c \
+				ft_substr.c
 
 LFTFILES	=	$(addprefix $(ISDIR)/, $(ISFILES)) \
 				$(addprefix $(TODIR)/, $(TOFILES)) \

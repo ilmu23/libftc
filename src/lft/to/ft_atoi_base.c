@@ -5,43 +5,32 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<libft_to.h>>
+// <<ft_atoi_base.c>>
 
-#ifndef LIBFT_TO_H
-# define LIBFT_TO_H
-# include "internal/libft_defs.h"
+#include "libft.h"
 
-# define ft_atoi	ft_atoi32
-# define ft_atou	ft_atou32
+i64	ft_atoi_base(const char *n, const char *base) {
+	char	*nbr;
+	i64		out;
+	i64		lmt;
+	i16		blen;
+	i8		sgn;
 
-# define ft_itoa	ft_itoa32
-# define ft_utoa	ft_utoa32
-
-char	*ft_itoa8(i8 n);
-char	*ft_itoa16(i16 n);
-char	*ft_itoa32(i32 n);
-char	*ft_itoa64(i64 n);
-char	*ft_itoa_base(i64 n, const char *base);
-
-char	*ft_utoa8(u8 n);
-char	*ft_utoa16(u16 n);
-char	*ft_utoa32(u32 n);
-char	*ft_utoa64(u64 n);
-char	*ft_utoa_base(u64 n, const char *base);
-
-i8		ft_atoi8(const char *n);
-i16		ft_atoi16(const char *n);
-i32		ft_atoi32(const char *n);
-i64		ft_atoi64(const char *n);
-i64		ft_atoi_base(const char *n, const char *base);
-
-u8		ft_atou8(const char *n);
-u16		ft_atou16(const char *n);
-u32		ft_atou32(const char *n);
-u64		ft_atou64(const char *n);
-u64		ft_atou_base(const char *n, const char *base);
-
-i32		ft_tolower(const i32 c);
-i32		ft_toupper(const i32 c);
-
-#endif
+	blen = ft_strnlen(base, UINT8_MAX);
+	while (ft_isspace(*n))
+		n++;
+	sgn = (*n != '-') ? 1 : -1;
+	if ((*n == '+') | (*n == '-'))
+		n++;
+	for (out = 0, lmt = INT64_MAX / blen, nbr = ft_strchr(base, *n++); nbr; nbr = ft_strchr(base, *n++)) {
+		if ((out > lmt) | ((out == lmt) & (pcast(i64, (nbr - base)) > INT64_MAX % blen))) {
+			if ((sgn == -1) & ((u64)(out * blen + pcast(i64, (nbr - base))) <= (u64)INT64_MIN)) {
+				out = -out * blen - pcast(i64, (nbr - base));
+				return out;
+			}
+			return (sgn == 1) ? -1 : 0;
+		}
+		out = out * blen + pcast(i64, (nbr - base));
+	}
+	return out * sgn;
+}

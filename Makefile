@@ -81,7 +81,17 @@ ISFILES		=	ft_isalnum.c \
 				ft_isupper.c \
 				ft_isxdigit.c
 
-TOFILES		=	ft_itoa16.c \
+TOFILES		=	ft_atoi16.c \
+				ft_atoi32.c \
+				ft_atoi64.c \
+				ft_atoi8.c \
+				ft_atoi_base.c \
+				ft_atou16.c \
+				ft_atou32.c \
+				ft_atou64.c \
+				ft_atou8.c \
+				ft_atou_base.c \
+				ft_itoa16.c \
 				ft_itoa32.c \
 				ft_itoa64.c \
 				ft_itoa8.c \

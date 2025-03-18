@@ -114,7 +114,8 @@ MEMFILES	=	ft_bzero.c \
 				ft_memrchr.c \
 				ft_memset.c
 
-STRFILES	=	ft_stpcpy.c \
+STRFILES	=	ft_split.c \
+				ft_stpcpy.c \
 				ft_stpncpy.c \
 				ft_strcat.c \
 				ft_strchr.c \

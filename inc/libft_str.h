@@ -11,6 +11,8 @@
 # define LIBFT_STR_H
 # include "internal/libft_defs.h"
 
+char	**ft_split(const char *s, const i32 c);
+
 char	*ft_strdup(const char *s);
 char	*ft_strndup(const char *s, size_t n);
 

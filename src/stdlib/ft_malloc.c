@@ -294,7 +294,7 @@ static inline void	_shrink_to_fit(chunk_t *chnk, const size_t sz, const size_t c
 	for (; chnk->size > 16 && chnk->size - sz >= 16; delta += 16)
 		chnk->size -= 16;
 	next = NULL;
-	if (chnk->nxt) {
+	if (chnk->nxt && !chnk->nxt->inuse) {
 		oldnext = *chnk->nxt;
 		next = (chunk_t *)__after(chnk, chnk->size);
 		*next = (chunk_t){

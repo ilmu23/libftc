@@ -24,18 +24,15 @@ void	ft_free(void *ptr) {
 		;
 	if (tmp != chnk) {
 		ft_write(2, "ft_free(): invalid pointer\n", 27);
-		// die
-		ft_exit(1);
+		ft_exit(1); // replace with abort() once implemented
 	}
 	if (__cs1_loc(chnk, chnk->asize) != __cs || __cs2_loc(chnk) != __cs) {
 		ft_write(2, "ft_free: heap corruption detected\n", 34);
-		// die
-		ft_exit(1);
+		ft_exit(1); // replace with abort() once implemented
 	}
 	if (!chnk->inuse) {
 		ft_write(2, "ft_free: double free\n", 21);
-		// die
-		ft_exit(1);
+		ft_exit(1); // replace with abort() once implemented
 	}
 	chnk->inuse = 0;
 	chnk->asize = 0;
